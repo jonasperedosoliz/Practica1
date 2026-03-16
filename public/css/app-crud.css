@@ -1,0 +1,150 @@
+/* CRUD Productos - Diseño profesional con toques 3D */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+    --sidebar-bg: linear-gradient(180deg, #1e293b 0%, #312e81 100%);
+    --sidebar-text: #e2e8f0;
+    --sidebar-hover: rgba(255,255,255,0.12);
+    --card-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 10px 20px -5px rgba(0,0,0,0.06);
+    --card-shadow-hover: 0 20px 40px -12px rgba(99,102,241,0.25), 0 0 0 1px rgba(99,102,241,0.08);
+    --btn-primary: #4f46e5;
+    --btn-primary-dark: #4338ca;
+    --btn-success: #059669;
+    --btn-success-dark: #047857;
+}
+
+* { box-sizing: border-box; }
+body.crud-app { font-family: 'Plus Jakarta Sans', sans-serif; background: #f1f5f9; min-height: 100vh; }
+
+/* Sidebar 3D */
+.crud-sidebar {
+    width: 220px; min-height: 100vh; padding: 24px;
+    background: var(--sidebar-bg);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+    position: relative;
+    transform-style: preserve-3d;
+}
+.crud-sidebar::after {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.2), transparent);
+    border-radius: 0 4px 4px 0;
+    pointer-events: none;
+}
+.crud-sidebar h5 { color: #fff; font-weight: 700; font-size: 1.05rem; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+.crud-sidebar a {
+    display: block; color: var(--sidebar-text); text-decoration: none; padding: 10px 12px; border-radius: 10px;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 4px;
+}
+.crud-sidebar a:hover { background: var(--sidebar-hover); color: #fff; transform: translateX(4px); }
+.crud-sidebar a.active { background: rgba(99,102,241,0.35); color: #fff; font-weight: 600; box-shadow: 0 2px 8px rgba(99,102,241,0.3); }
+
+/* Contenido principal */
+.crud-main { flex: 1; padding: 28px; min-height: 100vh; }
+
+/* Cards con efecto 3D */
+.crud-card {
+    background: #fff; border-radius: 16px; overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transform-style: preserve-3d;
+    border: 1px solid rgba(0,0,0,0.04);
+}
+.crud-card:hover { transform: translateY(-4px); box-shadow: var(--card-shadow-hover); }
+.crud-card .card-body { padding: 1.5rem 1.75rem; }
+
+/* Botón Registrar / Guardar - estilo 3D */
+.btn-register, .btn-actualizar {
+    padding: 10px 24px; font-weight: 600; border-radius: 10px; border: none;
+    cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease;
+    font-family: inherit; font-size: 0.95rem;
+}
+.btn-register {
+    background: linear-gradient(180deg, #4f46e5, #4338ca);
+    color: #fff; box-shadow: 0 4px 14px rgba(79,70,229,0.45);
+}
+.btn-register:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79,70,229,0.5); }
+.btn-register:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(79,70,229,0.4); }
+
+.btn-actualizar {
+    background: linear-gradient(180deg, #059669, #047857);
+    color: #fff; box-shadow: 0 4px 14px rgba(5,150,105,0.4);
+}
+.btn-actualizar:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(5,150,105,0.45); }
+.btn-actualizar:active { transform: translateY(0); }
+
+.btn-cancel {
+    padding: 10px 20px; border-radius: 10px; font-weight: 500; text-decoration: none; display: inline-block;
+    background: #e2e8f0; color: #475569; transition: transform 0.15s ease, background 0.2s ease;
+}
+.btn-cancel:hover { background: #cbd5e1; color: #334155; transform: translateY(-1px); }
+
+/* Formularios */
+.crud-card .form-label { font-weight: 600; color: #334155; margin-bottom: 6px; }
+.crud-card .form-control, .crud-card .form-select {
+    border-radius: 10px; border: 1px solid #e2e8f0; padding: 10px 14px;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.crud-card .form-control:focus, .crud-card .form-select:focus {
+    border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.2); outline: none;
+}
+.crud-card textarea.form-control { min-height: 90px; resize: vertical; }
+
+/* ComboBox categoría */
+.crud-card select.form-select { cursor: pointer; appearance: auto; }
+
+/* Tablas */
+.crud-card .table { margin-bottom: 0; }
+.crud-card .table { table-layout: fixed; width: 100%; }
+.crud-card .table thead th {
+    font-weight: 600; color: #475569; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em;
+    padding: 14px 16px; border-bottom: 2px solid #e2e8f0;
+}
+.crud-card .table tbody td { padding: 14px 16px; vertical-align: middle; }
+.crud-card .table tbody tr { transition: background 0.15s ease; }
+.crud-card .table tbody tr:hover { background: #f8fafc; }
+.crud-card .table .btn { border-radius: 8px; font-weight: 500; transition: transform 0.15s ease; }
+.crud-card .table .btn:hover { transform: scale(1.03); }
+.crud-card .table .btn-warning { background: #f59e0b; border-color: #f59e0b; color: #fff; }
+.crud-card .table .btn-danger { background: #dc2626; border-color: #dc2626; color: #fff; }
+
+/* Columna Descripción y Acciones: evitar que el texto mueva botones */
+.crud-td-actions { width: 180px; white-space: nowrap; }
+.crud-actions { display: flex; gap: 10px; align-items: center; justify-content: flex-start; flex-wrap: nowrap; }
+.crud-actions .btn { white-space: nowrap; }
+
+.crud-td-desc {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* En pantallas grandes, deja un poco más de aire a la descripción */
+@media (min-width: 992px) {
+    .crud-td-actions { width: 200px; }
+}
+
+/* Títulos de página */
+.crud-page-title { font-weight: 700; color: #0f172a; font-size: 1.5rem; margin-bottom: 0.5rem; }
+.crud-page-sub { color: #64748b; font-size: 0.9rem; margin-bottom: 1.25rem; }
+
+/* Botón Nueva Categoría / Nuevo Producto */
+.btn-new {
+    padding: 10px 20px; font-weight: 600; border-radius: 10px; border: none;
+    background: linear-gradient(180deg, #4f46e5, #4338ca); color: #fff;
+    box-shadow: 0 4px 14px rgba(79,70,229,0.4); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-new:hover { color: #fff; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79,70,229,0.5); }
+
+/* Alertas */
+.alert { border-radius: 12px; border: none; }
+.alert-success { background: #d1fae5; color: #065f46; }
+
+/* Animación entrada */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.crud-main .crud-card { animation: fadeInUp 0.4s ease forwards; }
+.crud-main .d-flex.mb-3 { animation: fadeInUp 0.35s ease forwards; }
