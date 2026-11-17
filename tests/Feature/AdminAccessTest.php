@@ -34,7 +34,7 @@ class AdminAccessTest extends TestCase
 
     public function test_administrator_can_use_current_admin_features(): void
     {
-        $admin = User::factory()->create([
+        $admin = User::factory()->admin()->create([
             'name' => 'Administrador',
             'email' => 'admin@example.com',
         ]);

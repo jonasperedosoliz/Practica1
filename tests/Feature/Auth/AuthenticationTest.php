@@ -19,7 +19,7 @@ class AuthenticationTest extends TestCase
 
     public function test_administrator_can_authenticate_using_the_login_screen(): void
     {
-        $admin = User::factory()->create([
+        $admin = User::factory()->admin()->create([
             'name' => 'Administrador',
             'email' => 'admin@example.com',
         ]);
@@ -31,6 +31,22 @@ class AuthenticationTest extends TestCase
 
         $this->assertAuthenticatedAs($admin);
         $response->assertRedirect(route('dashboard', absolute: false));
+    }
+
+    public function test_customer_is_redirected_to_catalog_after_login(): void
+    {
+        $customer = User::factory()->create([
+            'email' => 'cliente@example.com',
+            'is_admin' => false,
+        ]);
+
+        $response = $this->post('/login', [
+            'email' => $customer->email,
+            'password' => 'password',
+        ]);
+
+        $this->assertAuthenticatedAs($customer);
+        $response->assertRedirect(route('catalogo', absolute: false));
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void

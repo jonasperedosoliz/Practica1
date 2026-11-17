@@ -1,4 +1,4 @@
-<x-guest-layout hero-title="Login" hero-text="Ingresa tus datos para entrar al sistema y continuar con la gestión administrativa.">
+<x-guest-layout hero-title="Acceso seguro" hero-text="Ingresa a tu cuenta para continuar con la gestión del sistema.">
     <form method="POST" action="{{ route('login') }}" class="auth-stack">
         @csrf
 
@@ -35,5 +35,9 @@
         </div>
 
         <button class="auth-submit" type="submit">Entrar</button>
+
+        @if (Route::has('register'))
+            <p class="auth-footer mb-0 mt-4">¿No tiene cuenta? <a class="auth-link js-cinematic-bridge" href="{{ route('register') }}">Regístrese</a></p>
+        @endif
     </form>
 </x-guest-layout>

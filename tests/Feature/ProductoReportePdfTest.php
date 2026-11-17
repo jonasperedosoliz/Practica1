@@ -14,7 +14,7 @@ class ProductoReportePdfTest extends TestCase
 
     public function test_authenticated_user_can_generate_products_pdf_report(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->admin()->create();
 
         $categoria = Categoria::create([
             'nombre' => 'Lacteos',

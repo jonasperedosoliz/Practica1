@@ -13,7 +13,7 @@ class CategoriaIndexPaginationTest extends TestCase
 
     public function test_category_list_is_paginated_in_groups_of_seven(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->admin()->create();
 
         foreach (range(1, 9) as $numero) {
             Categoria::create([

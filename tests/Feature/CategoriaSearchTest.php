@@ -13,7 +13,7 @@ class CategoriaSearchTest extends TestCase
 
     public function test_category_search_filters_by_name_description_and_status(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->admin()->create();
 
         Categoria::create([
             'nombre' => 'Monitores',

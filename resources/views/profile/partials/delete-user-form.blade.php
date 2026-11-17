@@ -1,30 +1,36 @@
-<section class="space-y-6">
-    <header class="profile-section-head">
-        <span class="section-label">Zona sensible</span>
-        <h3>Eliminar cuenta</h3>
-        <p>Esta acción borra definitivamente su cuenta y todos los datos vinculados. Úsela solo si realmente desea salir del sistema.</p>
-    </header>
+<header class="profile-section-head">
+    <span class="crud-panel-label danger">Zona sensible</span>
+    <h3>Eliminar cuenta</h3>
+    <p>Esta acción borra definitivamente su cuenta y los datos vinculados. Úsela solo si realmente desea salir del sistema.</p>
+</header>
 
+<div class="profile-danger-box">
+    <div>
+        <strong>Eliminación irreversible</strong>
+        <p>Al confirmar, se cerrará la sesión y no podrá recuperar esta cuenta.</p>
+    </div>
     <button
         type="button"
-        class="btn btn-danger rounded-3 px-4 py-2"
+        class="btn btn-action-delete"
         x-data=""
         x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
     >
-        Eliminar cuenta
+        <i class="bi bi-trash3"></i> Eliminar cuenta
     </button>
+</div>
 
-    <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
-        <form method="post" action="{{ route('profile.destroy') }}" class="p-4">
-            @csrf
-            @method('delete')
+<x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
+    <form method="post" action="{{ route('profile.destroy') }}" class="profile-modal-form">
+        @csrf
+        @method('delete')
 
-            <h2 class="h4 fw-bold text-dark mb-2">¿Seguro que desea eliminar su cuenta?</h2>
+        <h2>¿Seguro que desea eliminar su cuenta?</h2>
+        <p>
+            Una vez eliminada, todos sus recursos y datos se borrarán permanentemente. Ingrese su contraseña para confirmar.
+        </p>
 
-            <p class="text-muted mb-3">
-                Una vez eliminada, todos sus recursos y datos se borrarán permanentemente. Ingrese su contraseña para confirmar esta acción.
-            </p>
-
+        <div class="crud-field">
+            <label for="password">Contraseña <span>*</span></label>
             <div class="password-field-wrap">
                 <input
                     id="password"
@@ -37,15 +43,14 @@
                     <i class="bi bi-eye"></i>
                 </button>
             </div>
-
             @if($errors->userDeletion->has('password'))
                 <div class="invalid-feedback d-block">{{ $errors->userDeletion->first('password') }}</div>
             @endif
+        </div>
 
-            <div class="mt-4 d-flex justify-content-end gap-2">
-                <button type="button" class="btn btn-outline-secondary rounded-3 px-4" x-on:click="$dispatch('close')">Cancelar</button>
-                <button type="submit" class="btn btn-danger rounded-3 px-4">Eliminar definitivamente</button>
-            </div>
-        </form>
-    </x-modal>
-</section>
+        <div class="crud-form-actions justify-content-end">
+            <button type="button" class="btn btn-cancel" x-on:click="$dispatch('close')">Cancelar</button>
+            <button type="submit" class="btn btn-action-delete">Eliminar definitivamente</button>
+        </div>
+    </form>
+</x-modal>

@@ -50,6 +50,7 @@ class CreateAdminUser extends Command
             $user->forceFill([
                 'name' => $name,
                 'password' => $password,
+                'is_admin' => true,
                 'email_verified_at' => $user->email_verified_at ?? now(),
             ])->save();
 
@@ -59,6 +60,7 @@ class CreateAdminUser extends Command
                 'name' => $name,
                 'email' => $email,
                 'password' => $password,
+                'is_admin' => true,
                 'email_verified_at' => now(),
             ]);
 

@@ -9,210 +9,258 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="view-transition" content="same-origin">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'AppWeb-GestionProductos') }}</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
         :root {
-            --ink: #142135;
-            --slate: #5f7188;
-            --navy: #0f172d;
-            --navy-soft: #1d2740;
-            --blue: #3b82f6;
-            --blue-soft: #74a7ff;
-            --teal: #1fb6a6;
-            --paper: #f4f7fb;
-            --white: #ffffff;
-            --danger: #d24a64;
-            --success: #1e8f5c;
+            --ink: #e8f7ff;
+            --ink-dark: #0b1524;
+            --muted: rgba(196, 230, 255, 0.72);
+            --slate: #6b849c;
+            --navy: #070b14;
+            --cyan: #2de7ff;
+            --cyan-soft: #7ef3ff;
+            --blue: #3f78ff;
+            --teal: #1db6a4;
+            --danger: #ff6b8a;
+            --success: #3ddea8;
+            --glow: 0 0 28px rgba(45, 231, 255, 0.28);
         }
 
         * { box-sizing: border-box; }
 
-        body {
+        html, body {
             margin: 0;
-            min-height: 100vh;
+            min-height: 100%;
+        }
+
+        body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             color: var(--ink);
-            background:
-                radial-gradient(circle at top left, rgba(59, 130, 246, 0.12), transparent 24%),
-                radial-gradient(circle at bottom right, rgba(31, 182, 166, 0.12), transparent 22%),
-                linear-gradient(180deg, #eef3f9 0%, #f8fbff 100%);
+            background: var(--navy);
+            overflow-x: hidden;
         }
 
-        a { text-decoration: none; }
+        a { text-decoration: none; color: inherit; }
+
+        @view-transition {
+            navigation: auto;
+        }
+
+        .video-stage {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            background: #050912;
+            view-transition-name: cinematic-video;
+        }
+
+        .video-stage video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1.04);
+            filter: saturate(1.15) contrast(1.05);
+        }
+
+        .video-veil,
+        .video-glow {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .video-veil {
+            background:
+                linear-gradient(180deg, rgba(4, 8, 18, 0.72) 0%, rgba(4, 10, 22, 0.42) 40%, rgba(3, 8, 18, 0.82) 100%),
+                radial-gradient(circle at 78% 30%, rgba(45, 231, 255, 0.14), transparent 28%),
+                radial-gradient(circle at 16% 78%, rgba(63, 120, 255, 0.16), transparent 30%);
+        }
+
+        .video-glow {
+            background:
+                radial-gradient(circle at 50% 0%, rgba(126, 243, 255, 0.12), transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(29, 182, 164, 0.12), transparent 35%);
+            animation: aurora 12s ease-in-out infinite alternate;
+        }
+
+        .guest-page {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+        }
 
         .guest-shell {
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto;
             min-height: 100vh;
+            padding: 18px 0 28px;
             display: grid;
-            grid-template-columns: minmax(360px, 1.02fr) minmax(420px, .98fr);
+            grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
+            gap: 1.1rem;
             align-items: stretch;
+            view-transition-name: cinematic-shell;
         }
 
-        .guest-showcase {
-            position: relative;
-            overflow: hidden;
-            padding: 2rem;
+        .guest-showcase,
+        .guest-form-side {
             display: flex;
+        }
+
+        .guest-showcase-card,
+        .guest-form-card {
+            width: 100%;
+            border-radius: 28px;
+            background: rgba(8, 16, 32, 0.52);
+            border: 1px solid rgba(126, 243, 255, 0.16);
+            box-shadow: 0 22px 48px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(18px);
+            overflow: hidden;
         }
 
         .guest-showcase-card {
-            position: relative;
-            width: 100%;
-            border-radius: 34px;
-            background:
-                radial-gradient(circle at top right, rgba(116, 167, 255, 0.18), transparent 24%),
-                radial-gradient(circle at bottom left, rgba(31, 182, 166, 0.14), transparent 22%),
-                linear-gradient(160deg, #111a30 0%, #1a2340 56%, #243155 100%);
-            box-shadow: 0 30px 60px rgba(17, 24, 39, 0.24);
-            color: #fff;
-            padding: 2.2rem;
+            padding: 1.6rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            gap: 1.5rem;
+            animation: fadeUp .8s ease both;
+        }
+
+        .guest-brand-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .guest-brand {
             display: flex;
             align-items: center;
             gap: .8rem;
+            font-family: 'Outfit', sans-serif;
             font-weight: 800;
             letter-spacing: -.02em;
         }
 
         .guest-brand-mark {
-            width: 42px;
-            height: 42px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, var(--blue), var(--blue-soft));
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 18px 24px rgba(59, 130, 246, 0.25);
-        }
-
-        .guest-brand-mark::before {
-            content: '';
             width: 18px;
             height: 18px;
             border-radius: 6px;
-            background: rgba(255, 255, 255, 0.9);
-            transform: rotate(12deg);
+            transform: rotate(18deg);
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            box-shadow: var(--glow);
+            animation: pulseGlow 2.8s ease-in-out infinite;
         }
 
         .guest-nav {
             display: flex;
-            gap: .8rem;
+            gap: .7rem;
             flex-wrap: wrap;
-            justify-content: flex-end;
         }
 
         .guest-nav a {
-            padding: .75rem 1rem;
+            padding: .72rem 1rem;
             border-radius: 999px;
-            color: rgba(255,255,255,.9);
-            border: 1px solid rgba(255,255,255,.12);
-            background: rgba(255,255,255,.06);
             font-weight: 700;
-            transition: transform .18s ease, background-color .18s ease, border-color .18s ease;
+            color: rgba(232, 247, 255, 0.92);
+            border: 1px solid rgba(126, 243, 255, 0.18);
+            background: rgba(8, 16, 32, 0.35);
+            transition: transform .2s ease, border-color .2s ease, background .2s ease;
         }
 
-        .guest-nav a:hover {
+        .guest-nav a:hover,
+        .guest-nav a.is-active {
             transform: translateY(-1px);
-            background: rgba(255,255,255,.12);
-            border-color: rgba(255,255,255,.18);
-        }
-
-        .guest-copy {
-            max-width: 560px;
-            padding: 2rem 0;
+            border-color: rgba(126, 243, 255, 0.45);
+            background: rgba(45, 231, 255, 0.12);
         }
 
         .guest-kicker {
             display: inline-flex;
             align-items: center;
-            gap: .55rem;
-            padding: .45rem .85rem;
+            gap: .5rem;
+            padding: .5rem .9rem;
             border-radius: 999px;
-            background: rgba(255,255,255,.08);
-            border: 1px solid rgba(255,255,255,.1);
-            color: rgba(255,255,255,.88);
-            font-size: .85rem;
+            background: rgba(45, 231, 255, 0.08);
+            border: 1px solid rgba(126, 243, 255, 0.22);
+            color: var(--cyan-soft);
+            font-size: .78rem;
             font-weight: 700;
-            margin-bottom: 1.25rem;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
         }
 
         .guest-copy h1 {
-            margin: 0 0 1rem;
+            margin: 0 0 .9rem;
             font-family: 'Outfit', sans-serif;
-            font-weight: 900;
-            font-size: clamp(3rem, 5vw, 4.8rem);
+            font-size: clamp(2.6rem, 5vw, 4.2rem);
             line-height: .96;
             letter-spacing: -.05em;
-            max-width: 520px;
         }
 
         .guest-copy h1 span {
-            color: #7db0ff;
+            background: linear-gradient(120deg, var(--cyan-soft), #9ecbff 45%, #6aa7ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .guest-copy p {
             margin: 0;
             max-width: 520px;
-            font-size: 1.1rem;
+            color: var(--muted);
+            font-size: 1.05rem;
             line-height: 1.7;
-            color: rgba(234, 241, 255, 0.76);
         }
 
         .guest-feature-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 1rem;
-            margin-top: 2rem;
+            gap: .85rem;
         }
 
         .guest-feature {
-            padding: 1.1rem;
-            border-radius: 22px;
-            background: rgba(255,255,255,.06);
-            border: 1px solid rgba(255,255,255,.08);
-            backdrop-filter: blur(8px);
+            padding: 1rem;
+            border-radius: 18px;
+            background: rgba(8, 16, 32, 0.42);
+            border: 1px solid rgba(126, 243, 255, 0.12);
         }
 
         .guest-feature strong {
             display: block;
             font-family: 'Outfit', sans-serif;
-            font-size: 1.02rem;
-            margin-bottom: .45rem;
+            margin-bottom: .4rem;
         }
 
         .guest-feature span {
             display: block;
-            color: rgba(234, 241, 255, 0.74);
+            color: var(--muted);
             line-height: 1.55;
-            font-size: .92rem;
+            font-size: .9rem;
         }
 
         .guest-form-side {
-            padding: 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            animation: fadeUp .9s ease both;
+            animation-delay: .12s;
         }
 
         .guest-form-card {
-            width: 100%;
-            max-width: 560px;
-            background: rgba(255,255,255,.92);
-            border: 1px solid rgba(20, 33, 53, 0.08);
-            border-radius: 30px;
-            box-shadow: 0 26px 60px rgba(15, 23, 42, 0.12);
-            backdrop-filter: blur(10px);
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background: rgba(246, 252, 255, 0.92);
+            color: var(--ink-dark);
+            border-color: rgba(126, 243, 255, 0.28);
+            box-shadow: 0 24px 50px rgba(0, 0, 0, 0.28), 0 0 40px rgba(45, 231, 255, 0.08);
         }
 
         .guest-form-topbar {
@@ -220,55 +268,63 @@
             align-items: center;
             justify-content: space-between;
             gap: 1rem;
-            padding: 1.2rem 1.45rem;
-            border-bottom: 1px solid rgba(20, 33, 53, 0.08);
-            background: linear-gradient(180deg, rgba(244,247,251,.88), rgba(255,255,255,.82));
+            padding: 1.15rem 1.35rem;
+            border-bottom: 1px solid rgba(15, 35, 55, 0.08);
+            background: linear-gradient(180deg, rgba(235, 248, 255, 0.95), rgba(255, 255, 255, 0.88));
         }
 
         .guest-form-topbar strong {
+            display: block;
             font-family: 'Outfit', sans-serif;
             font-size: 1.02rem;
-            color: var(--ink);
+            color: var(--ink-dark);
         }
 
         .guest-form-topbar small {
-            color: var(--slate);
             display: block;
             margin-top: .2rem;
+            color: var(--slate);
         }
 
         .guest-back-link {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
+            gap: .35rem;
             min-height: 40px;
             padding: .65rem 1rem;
             border-radius: 999px;
-            color: var(--ink);
-            background: rgba(20,33,53,.05);
             font-weight: 700;
+            color: var(--ink-dark);
+            background: rgba(15, 35, 55, 0.06);
+            border: 1px solid rgba(45, 231, 255, 0.18);
+            transition: transform .2s ease, background .2s ease;
+        }
+
+        .guest-back-link:hover {
+            transform: translateY(-1px);
+            background: rgba(45, 231, 255, 0.12);
         }
 
         .guest-form-body {
-            padding: 2rem;
+            padding: 1.7rem;
         }
 
         .auth-eyebrow {
             display: inline-block;
-            margin-bottom: .75rem;
-            color: var(--blue);
+            margin-bottom: .7rem;
+            color: #1aa9c4;
             text-transform: uppercase;
             letter-spacing: .12em;
-            font-size: .8rem;
+            font-size: .78rem;
             font-weight: 800;
         }
 
         .auth-title {
-            margin: 0 0 .55rem;
+            margin: 0 0 .5rem;
             font-family: 'Outfit', sans-serif;
-            font-size: 2.25rem;
+            font-size: 2.15rem;
             line-height: 1;
-            color: var(--ink);
+            color: var(--ink-dark);
         }
 
         .auth-copy,
@@ -288,24 +344,25 @@
 
         .auth-label {
             font-weight: 700;
-            color: var(--ink);
+            color: var(--ink-dark);
         }
 
         .auth-control {
             width: 100%;
             min-height: 56px;
             border-radius: 16px;
-            border: 1px solid rgba(20, 33, 53, 0.12);
-            background: rgba(255,255,255,.96);
+            border: 1px solid rgba(15, 35, 55, 0.12);
+            background: rgba(255, 255, 255, 0.96);
             padding: 0 1rem;
             font: inherit;
-            color: var(--ink);
+            color: var(--ink-dark);
+            transition: border-color .2s ease, box-shadow .2s ease;
         }
 
         .auth-control:focus {
             outline: none;
-            border-color: rgba(59, 130, 246, .38);
-            box-shadow: 0 0 0 .2rem rgba(59, 130, 246, 0.08);
+            border-color: rgba(45, 231, 255, 0.55);
+            box-shadow: 0 0 0 .2rem rgba(45, 231, 255, 0.12);
         }
 
         .auth-submit {
@@ -313,15 +370,21 @@
             min-height: 56px;
             border: none;
             border-radius: 16px;
-            background: linear-gradient(135deg, #356dff, #5d8cff);
-            color: #fff;
+            background: linear-gradient(135deg, #b7fbff, var(--cyan) 40%, #4db8ff);
+            color: #041018;
             font-weight: 800;
-            box-shadow: 0 18px 28px rgba(53, 109, 255, 0.22);
+            box-shadow: 0 16px 30px rgba(45, 231, 255, 0.28);
             cursor: pointer;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .auth-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 34px rgba(45, 231, 255, 0.38);
         }
 
         .auth-link {
-            color: #265fda;
+            color: #1788a8;
             font-weight: 700;
         }
 
@@ -349,9 +412,9 @@
         .auth-alert {
             padding: .95rem 1rem;
             border-radius: 16px;
-            background: rgba(30, 143, 92, 0.10);
-            border: 1px solid rgba(30, 143, 92, 0.16);
-            color: var(--success);
+            background: rgba(61, 222, 168, 0.12);
+            border: 1px solid rgba(61, 222, 168, 0.22);
+            color: #148a64;
             font-weight: 600;
         }
 
@@ -365,45 +428,62 @@
         .mb-4 { margin-bottom: 1.5rem; }
         .mt-4 { margin-top: 1.5rem; }
 
-        @media (max-width: 1100px) {
-            .guest-feature-grid {
-                grid-template-columns: 1fr;
+        html.is-bridging body {
+            opacity: 0;
+            transform: translateY(10px) scale(0.992);
+            filter: blur(4px);
+            transition: opacity .32s ease, transform .32s ease, filter .32s ease;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 12px rgba(45, 231, 255, 0.35); }
+            50% { box-shadow: 0 0 24px rgba(45, 231, 255, 0.75); }
+        }
+
+        @keyframes aurora {
+            from { opacity: .55; transform: scale(1); }
+            to { opacity: 1; transform: scale(1.05); }
+        }
+
+        ::view-transition-old(cinematic-video),
+        ::view-transition-new(cinematic-video) {
+            animation-duration: .55s;
+            animation-timing-function: ease;
+        }
+
+        ::view-transition-old(cinematic-shell),
+        ::view-transition-new(cinematic-shell) {
+            animation-duration: .55s;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
             }
+        }
+
+        @media (max-width: 1100px) {
+            .guest-feature-grid { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 992px) {
             .guest-shell {
                 grid-template-columns: 1fr;
-            }
-
-            .guest-showcase,
-            .guest-form-side {
-                padding: 1rem;
-            }
-
-            .guest-showcase-card {
-                min-height: 440px;
-            }
-
-            .guest-nav {
-                justify-content: flex-start;
+                width: min(100%, calc(100% - 20px));
             }
         }
 
         @media (max-width: 576px) {
             .guest-showcase-card,
-            .guest-form-body {
-                padding: 1.35rem;
-            }
-
-            .guest-form-topbar {
-                padding: 1rem 1.2rem;
-            }
-
-            .guest-copy h1 {
-                font-size: 2.6rem;
-            }
-
+            .guest-form-body { padding: 1.2rem; }
+            .guest-form-topbar { padding: 1rem; }
+            .guest-copy h1 { font-size: 2.4rem; }
             .auth-row {
                 align-items: flex-start;
                 flex-direction: column;
@@ -412,27 +492,35 @@
     </style>
 </head>
 <body>
-    <main class="guest-shell">
-        <section class="guest-showcase">
-            <div class="guest-showcase-card">
-                <div class="d-flex flex-column gap-4">
-                    <div class="d-flex flex-column gap-3">
-                        <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+    @include('partials.cinematic-video')
+
+    <div class="guest-page">
+        <main class="guest-shell">
+            <section class="guest-showcase">
+                <div class="guest-showcase-card">
+                    <div>
+                        <div class="guest-brand-row">
                             <div class="guest-brand">
                                 <span class="guest-brand-mark"></span>
                                 <span>AppWeb-GestionProductos</span>
                             </div>
 
                             <nav class="guest-nav">
-                                <a href="{{ route('welcome') }}">Inicio</a>
+                                <a href="{{ route('welcome') }}" class="js-cinematic-bridge {{ request()->routeIs('welcome') ? 'is-active' : '' }}">Inicio</a>
                                 @if (Route::has('login'))
-                                    <a href="{{ route('login') }}">Ingresar</a>
+                                    <a href="{{ route('login') }}" class="js-cinematic-bridge {{ request()->routeIs('login') ? 'is-active' : '' }}">Ingresar</a>
+                                @endif
+                                @if (Route::has('register'))
+                                    <a href="{{ route('register') }}" class="js-cinematic-bridge {{ request()->routeIs('register') ? 'is-active' : '' }}">Registrarse</a>
                                 @endif
                             </nav>
                         </div>
 
-                        <div class="guest-copy">
-                            <span class="guest-kicker">Panel administrativo y operativo</span>
+                        <div class="guest-copy" style="margin-top: 2rem;">
+                            <span class="guest-kicker">
+                                <i class="bi bi-shield-lock"></i>
+                                Panel administrativo y operativo
+                            </span>
                             <h1>{{ $heroTitle }}</h1>
                             <p>{{ $heroText }}</p>
                         </div>
@@ -449,27 +537,32 @@
                         </article>
                         <article class="guest-feature">
                             <strong>Reportes instantáneos</strong>
-                            <span>Genere PDFs desde el panel sin sacrificar ligereza ni velocidad de carga.</span>
+                            <span>Genere PDFs y Excel desde el panel sin perder velocidad.</span>
                         </article>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="guest-form-side">
-            <div class="guest-form-card">
-                <div class="guest-form-topbar">
-                    <div>
-                        <strong>Acceso al sistema</strong>
-                        <small>Autenticación segura para usuarios autorizados</small>
+            <section class="guest-form-side">
+                <div class="guest-form-card">
+                    <div class="guest-form-topbar">
+                        <div>
+                            <strong>Acceso al sistema</strong>
+                            <small>Autenticación segura para usuarios autorizados</small>
+                        </div>
+                        <a href="{{ route('welcome') }}" class="guest-back-link js-cinematic-bridge">
+                            <i class="bi bi-arrow-left"></i>
+                            Volver
+                        </a>
                     </div>
-                    <a href="{{ route('welcome') }}" class="guest-back-link">Volver</a>
+                    <div class="guest-form-body">
+                        {{ $slot }}
+                    </div>
                 </div>
-                <div class="guest-form-body">
-                    {{ $slot }}
-                </div>
-            </div>
-        </section>
-    </main>
+            </section>
+        </main>
+    </div>
+
+    @include('partials.cinematic-bridge')
 </body>
 </html>

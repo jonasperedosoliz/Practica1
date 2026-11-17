@@ -13,7 +13,7 @@ class CategoriaReportePdfTest extends TestCase
 
     public function test_authenticated_user_can_generate_categories_pdf_report(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->admin()->create();
 
         Categoria::create([
             'nombre' => 'Lacteos',

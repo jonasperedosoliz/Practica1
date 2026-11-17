@@ -3,42 +3,116 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <meta name="view-transition" content="same-origin">
+    <title>{{ config('app.name', 'AppWeb-GestionProductos') }}</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
         :root {
-            --ink: #132238;
-            --slate: #61748b;
-            --navy: #131c32;
+            --ink: #e8f7ff;
+            --muted: rgba(196, 230, 255, 0.72);
+            --navy: #070b14;
+            --panel: rgba(8, 16, 32, 0.55);
+            --cyan: #2de7ff;
+            --cyan-soft: #7ef3ff;
             --blue: #3f78ff;
-            --blue-soft: #78a3ff;
             --teal: #1db6a4;
-            --paper: #f5f8fc;
+            --glow: 0 0 28px rgba(45, 231, 255, 0.28);
         }
 
         * { box-sizing: border-box; }
 
-        body {
+        html, body {
             margin: 0;
-            min-height: 100vh;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            color: var(--ink);
-            background:
-                radial-gradient(circle at top left, rgba(63, 120, 255, 0.10), transparent 20%),
-                radial-gradient(circle at bottom right, rgba(29, 182, 164, 0.08), transparent 20%),
-                linear-gradient(180deg, #f4f7fb 0%, #fbfdff 100%);
+            min-height: 100%;
         }
 
-        a { text-decoration: none; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--ink);
+            background: var(--navy);
+            overflow-x: hidden;
+        }
 
-        .landing-shell {
+        a { text-decoration: none; color: inherit; }
+
+        @view-transition {
+            navigation: auto;
+        }
+
+        .video-stage {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            background: #050912;
+            view-transition-name: cinematic-video;
+        }
+
+        html.is-bridging body {
+            opacity: 0;
+            transform: translateY(10px) scale(0.992);
+            filter: blur(4px);
+            transition: opacity .32s ease, transform .32s ease, filter .32s ease;
+        }
+
+        ::view-transition-old(cinematic-video),
+        ::view-transition-new(cinematic-video) {
+            animation-duration: .55s;
+            animation-timing-function: ease;
+        }
+
+        ::view-transition-old(cinematic-shell),
+        ::view-transition-new(cinematic-shell) {
+            animation-duration: .55s;
+        }
+
+        .video-stage video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1.04);
+            filter: saturate(1.15) contrast(1.05);
+        }
+
+        .video-veil,
+        .video-glow {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .video-veil {
+            background:
+                linear-gradient(180deg, rgba(4, 8, 18, 0.72) 0%, rgba(4, 10, 22, 0.45) 38%, rgba(3, 8, 18, 0.78) 100%),
+                radial-gradient(circle at 75% 35%, rgba(45, 231, 255, 0.16), transparent 28%),
+                radial-gradient(circle at 18% 80%, rgba(63, 120, 255, 0.18), transparent 30%);
+        }
+
+        .video-glow {
+            background:
+                radial-gradient(circle at 50% 0%, rgba(126, 243, 255, 0.12), transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(29, 182, 164, 0.12), transparent 35%);
+            animation: aurora 12s ease-in-out infinite alternate;
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page .landing-shell {
             width: min(1180px, calc(100% - 32px));
             margin: 0 auto;
-            padding: 18px 0 30px;
+            padding: 18px 0 40px;
+            flex: 1;
+            view-transition-name: cinematic-shell;
         }
 
         .landing-nav {
@@ -46,19 +120,22 @@
             align-items: center;
             justify-content: space-between;
             gap: 1rem;
-            padding: 1.05rem 1.25rem;
+            padding: 1rem 1.2rem;
             border-radius: 22px;
-            background: rgba(255,255,255,.84);
-            border: 1px solid rgba(19,34,56,.06);
-            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.06);
-            backdrop-filter: blur(10px);
+            background: rgba(8, 16, 32, 0.48);
+            border: 1px solid rgba(126, 243, 255, 0.18);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(16px);
+            animation: fadeDown 0.8s ease both;
         }
 
         .landing-brand {
             display: flex;
             align-items: center;
-            gap: .8rem;
+            gap: .85rem;
+            font-family: 'Outfit', sans-serif;
             font-weight: 800;
+            font-size: 1.05rem;
             letter-spacing: -.02em;
         }
 
@@ -67,343 +144,576 @@
             height: 18px;
             border-radius: 6px;
             transform: rotate(18deg);
-            background: linear-gradient(135deg, var(--blue), var(--blue-soft));
-            box-shadow: 0 10px 18px rgba(63, 120, 255, 0.25);
-        }
-
-        .landing-actions {
-            display: flex;
-            gap: .9rem;
-            flex-wrap: wrap;
-        }
-
-        .landing-actions a {
-            padding: .8rem 1.2rem;
-            border-radius: 999px;
-            font-weight: 700;
-        }
-
-        .nav-ghost {
-            color: var(--ink);
-            background: rgba(19,34,56,.05);
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            box-shadow: var(--glow);
+            animation: pulseGlow 2.8s ease-in-out infinite;
         }
 
         .nav-primary {
-            color: #fff;
-            background: linear-gradient(135deg, #356dff, #5f8eff);
-            box-shadow: 0 16px 24px rgba(53, 109, 255, 0.2);
-        }
-
-        .hero-card {
-            margin-top: 18px;
-            border-radius: 0 0 46px 46px;
-            background:
-                radial-gradient(circle at top right, rgba(96, 142, 255, 0.15), transparent 20%),
-                linear-gradient(140deg, #131b31 0%, #1d2845 45%, #202d4e 100%);
-            color: #fff;
-            padding: 2rem 2rem 2.2rem;
-            box-shadow: 0 28px 60px rgba(15, 23, 42, 0.18);
-        }
-
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1.05fr .95fr;
-            gap: 2rem;
+            display: inline-flex;
             align-items: center;
+            gap: .45rem;
+            padding: .78rem 1.25rem;
+            border-radius: 999px;
+            font-weight: 700;
+            color: #041018;
+            background: linear-gradient(135deg, var(--cyan-soft), var(--cyan) 45%, #3cc7ff);
+            box-shadow: 0 14px 30px rgba(45, 231, 255, 0.28);
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+
+        .nav-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 34px rgba(45, 231, 255, 0.38);
+        }
+
+        .hero {
+            min-height: min(78vh, 720px);
+            display: grid;
+            align-content: end;
+            padding: clamp(2.5rem, 8vh, 5.5rem) 0 1.5rem;
+        }
+
+        .hero-copy {
+            max-width: 720px;
         }
 
         .hero-kicker {
             display: inline-flex;
             align-items: center;
             gap: .55rem;
-            padding: .5rem .85rem;
+            padding: .55rem .95rem;
             border-radius: 999px;
-            background: rgba(255,255,255,.07);
-            border: 1px solid rgba(255,255,255,.08);
-            color: rgba(255,255,255,.82);
-            font-size: .82rem;
+            background: rgba(45, 231, 255, 0.08);
+            border: 1px solid rgba(126, 243, 255, 0.22);
+            color: var(--cyan-soft);
+            font-size: .78rem;
             font-weight: 700;
+            letter-spacing: .12em;
             text-transform: uppercase;
-            letter-spacing: .08em;
+            backdrop-filter: blur(10px);
+            animation: fadeUp 0.9s ease both;
+            animation-delay: .1s;
+        }
+
+        .hero-kicker i {
+            color: var(--cyan);
+            filter: drop-shadow(0 0 8px rgba(45, 231, 255, 0.7));
         }
 
         .hero-copy h1 {
-            margin: 1rem 0 1rem;
+            margin: 1.15rem 0 1rem;
             font-family: 'Outfit', sans-serif;
-            font-size: clamp(3rem, 5vw, 4.7rem);
-            line-height: .95;
+            font-size: clamp(2.8rem, 6vw, 4.8rem);
+            line-height: .96;
             letter-spacing: -.05em;
-            max-width: 620px;
+            text-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+            animation: fadeUp 1s ease both;
+            animation-delay: .22s;
         }
 
         .hero-copy h1 span {
-            color: #77a7ff;
+            background: linear-gradient(120deg, var(--cyan-soft), #9ecbff 45%, #6aa7ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0 0 18px rgba(45, 231, 255, 0.25));
         }
 
         .hero-copy p {
             margin: 0 0 2rem;
-            max-width: 590px;
-            color: rgba(226, 235, 251, 0.8);
-            font-size: 1.13rem;
+            max-width: 560px;
+            color: var(--muted);
+            font-size: 1.08rem;
             line-height: 1.75;
+            animation: fadeUp 1s ease both;
+            animation-delay: .34s;
         }
 
         .hero-cta {
             display: flex;
             gap: 1rem;
             flex-wrap: wrap;
-        }
-
-        .hero-cta a {
-            padding: 1rem 1.4rem;
-            border-radius: 18px;
-            font-weight: 800;
+            animation: fadeUp 1s ease both;
+            animation-delay: .46s;
         }
 
         .hero-cta-primary {
-            background: linear-gradient(135deg, #6aa7ff, #4f87ff);
-            color: #fff;
-            box-shadow: 0 18px 28px rgba(79, 135, 255, 0.22);
+            display: inline-flex;
+            align-items: center;
+            gap: .55rem;
+            padding: 1rem 1.45rem;
+            border-radius: 18px;
+            font-weight: 800;
+            color: #041018;
+            background: linear-gradient(135deg, #b7fbff, var(--cyan) 40%, #4db8ff);
+            box-shadow: 0 18px 36px rgba(45, 231, 255, 0.28);
+            transition: transform .25s ease, box-shadow .25s ease;
         }
 
-        .hero-cta-secondary {
-            color: #fff;
-            border: 1px solid rgba(255,255,255,.18);
-            background: rgba(255,255,255,.04);
+        .hero-cta-primary:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 22px 40px rgba(45, 231, 255, 0.4);
         }
 
-        .hero-preview {
-            display: flex;
-            justify-content: center;
-        }
-
-        .hero-analytics {
-            width: min(100%, 360px);
-            border-radius: 28px;
-            padding: 1rem;
-            background: linear-gradient(180deg, rgba(255,255,255,.94), rgba(248,251,255,.88));
-            box-shadow: 0 26px 46px rgba(8, 15, 30, 0.18);
-            transform: rotate(-1deg);
-        }
-
-        .hero-screen {
-            height: 248px;
-            border-radius: 22px;
-            background:
-                linear-gradient(180deg, rgba(13,18,30,.95), rgba(20,27,45,.95)),
-                #101826;
-            position: relative;
-            overflow: hidden;
-            padding: 1rem;
-        }
-
-        .hero-bars {
-            position: absolute;
-            inset: 18px 18px auto 18px;
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
+        .hero-cta-ghost {
+            display: inline-flex;
+            align-items: center;
             gap: .45rem;
-            align-items: end;
-            height: 92px;
+            padding: 1rem 1.35rem;
+            border-radius: 18px;
+            font-weight: 700;
+            color: #e8f7ff;
+            border: 1px solid rgba(126, 243, 255, 0.28);
+            background: rgba(8, 16, 32, 0.35);
+            backdrop-filter: blur(12px);
+            transition: transform .25s ease, border-color .25s ease, background .25s ease;
         }
 
-        .hero-bars span {
-            display: block;
-            border-radius: 10px 10px 4px 4px;
-            background: linear-gradient(180deg, #3ee7cf, #2797ff);
+        .hero-cta-ghost:hover {
+            transform: translateY(-2px);
+            border-color: rgba(126, 243, 255, 0.55);
+            background: rgba(45, 231, 255, 0.08);
         }
 
-        .hero-line {
-            position: absolute;
-            left: 18px;
-            right: 18px;
-            bottom: 30px;
-            height: 90px;
+        .signal-row {
+            margin-top: 2.4rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: .8rem;
+            animation: fadeUp 1s ease both;
+            animation-delay: .58s;
         }
 
-        .hero-line svg {
-            width: 100%;
-            height: 100%;
+        .signal-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .55rem;
+            padding: .7rem 1rem;
+            border-radius: 999px;
+            background: rgba(8, 16, 32, 0.42);
+            border: 1px solid rgba(126, 243, 255, 0.14);
+            backdrop-filter: blur(10px);
+            color: rgba(220, 245, 255, 0.88);
+            font-size: .9rem;
+            font-weight: 600;
+        }
+
+        .signal-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--cyan);
+            box-shadow: 0 0 12px rgba(45, 231, 255, 0.9);
+            animation: blink 1.8s ease-in-out infinite;
         }
 
         .feature-grid {
-            margin: -18px auto 0;
-            width: min(960px, calc(100% - 24px));
+            margin-top: 1.5rem;
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 1rem;
         }
 
         .feature-card {
-            background: rgba(255,255,255,.92);
+            position: relative;
+            overflow: hidden;
+            padding: 1.55rem;
             border-radius: 24px;
-            padding: 1.6rem;
-            border: 1px solid rgba(19,34,56,.06);
-            box-shadow: 0 18px 34px rgba(15, 23, 42, 0.08);
+            background: rgba(8, 16, 32, 0.52);
+            border: 1px solid rgba(126, 243, 255, 0.16);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+            backdrop-filter: blur(16px);
+            transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+            animation: fadeUp 0.9s ease both;
+        }
+
+        .feature-card:nth-child(1) { animation-delay: .65s; }
+        .feature-card:nth-child(2) { animation-delay: .78s; }
+        .feature-card:nth-child(3) { animation-delay: .91s; }
+
+        .feature-card::before {
+            content: "";
+            position: absolute;
+            inset: auto -20% -40% auto;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(45, 231, 255, 0.18), transparent 70%);
+            pointer-events: none;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(126, 243, 255, 0.42);
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35), 0 0 30px rgba(45, 231, 255, 0.12);
         }
 
         .feature-icon {
-            width: 54px;
-            height: 54px;
-            border-radius: 18px;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-weight: 900;
             margin-bottom: 1rem;
+            font-size: 1.2rem;
+            color: var(--cyan-soft);
+            background: linear-gradient(145deg, rgba(45, 231, 255, 0.16), rgba(63, 120, 255, 0.12));
+            border: 1px solid rgba(126, 243, 255, 0.2);
+            box-shadow: var(--glow);
         }
 
-        .icon-blue { background: rgba(63,120,255,.10); color: #356dff; }
-        .icon-green { background: rgba(29,182,164,.12); color: #169786; }
-        .icon-pink { background: rgba(255,86,132,.10); color: #ff4d7d; }
-
         .feature-card h3 {
-            margin: 0 0 .75rem;
+            margin: 0 0 .7rem;
             font-family: 'Outfit', sans-serif;
-            font-size: 1.35rem;
+            font-size: 1.28rem;
+            letter-spacing: -.02em;
         }
 
         .feature-card p {
             margin: 0;
-            color: var(--slate);
+            color: var(--muted);
             line-height: 1.7;
+            font-size: .98rem;
+        }
+
+        .welcome-catalog {
+            margin-top: 1.5rem;
+            padding: 1.4rem;
+            border-radius: 28px;
+            background: rgba(8, 16, 32, 0.52);
+            border: 1px solid rgba(126, 243, 255, 0.16);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+        }
+
+        .welcome-catalog-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: end;
+            margin-bottom: 1.2rem;
+        }
+
+        .welcome-catalog-head h2 {
+            margin: .8rem 0 .45rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.7rem, 3vw, 2.3rem);
+        }
+
+        .welcome-catalog-head p {
+            margin: 0;
+            max-width: 560px;
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        .welcome-catalog-grid {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        .welcome-product-card {
+            border-radius: 20px;
+            overflow: hidden;
+            background: rgba(8, 16, 32, 0.55);
+            border: 1px solid rgba(126, 243, 255, 0.14);
+        }
+
+        .welcome-product-media {
+            height: 150px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(160deg, rgba(45, 231, 255, 0.08), rgba(63, 120, 255, 0.12));
+            overflow: hidden;
+        }
+
+        .welcome-product-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .welcome-product-media.is-empty {
+            color: var(--cyan-soft);
+            font-size: 1.8rem;
+        }
+
+        .welcome-product-body {
+            padding: 1rem;
+        }
+
+        .welcome-product-body span {
+            display: inline-block;
+            margin-bottom: .45rem;
+            color: var(--cyan-soft);
+            font-size: .75rem;
+            font-weight: 700;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+        }
+
+        .welcome-product-body h3 {
+            margin: 0 0 .55rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+        }
+
+        .welcome-product-body strong {
+            color: #fff;
+        }
+
+        .welcome-catalog-grid.is-locked .welcome-product-card {
+            filter: blur(3px) saturate(.8);
+            opacity: .55;
+            pointer-events: none;
+        }
+
+        .welcome-catalog-lock {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            padding: 1.5rem;
+            background: rgba(4, 10, 20, 0.55);
+            backdrop-filter: blur(2px);
+            text-align: center;
+            z-index: 2;
+        }
+
+        .welcome-catalog-lock i {
+            font-size: 1.8rem;
+            color: var(--cyan);
+            margin-bottom: .6rem;
+        }
+
+        .welcome-catalog-lock h3 {
+            margin: 0 0 .55rem;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .welcome-catalog-lock p {
+            margin: 0 auto;
+            max-width: 420px;
+            color: var(--muted);
+        }
+
+        .welcome-catalog-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--muted);
         }
 
         .landing-footer {
             text-align: center;
-            padding: 4.2rem 1rem 1.4rem;
-            color: var(--slate);
+            padding: 3.2rem 1rem 1.6rem;
+            color: rgba(196, 230, 255, 0.55);
+            animation: fadeUp 1s ease both;
+            animation-delay: 1s;
         }
 
         .landing-footer h4 {
-            margin: 0 0 .5rem;
+            margin: 0 0 .45rem;
             font-family: 'Outfit', sans-serif;
-            font-size: 2rem;
-            color: var(--ink);
+            font-size: 1.55rem;
+            color: #eef9ff;
+        }
+
+        .landing-footer hr {
+            max-width: 920px;
+            margin: 1.4rem auto;
+            border: 0;
+            border-top: 1px solid rgba(126, 243, 255, 0.12);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(22px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 12px rgba(45, 231, 255, 0.35); }
+            50% { box-shadow: 0 0 24px rgba(45, 231, 255, 0.75); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .45; transform: scale(.85); }
+        }
+
+        @keyframes aurora {
+            from { opacity: .55; transform: scale(1); }
+            to { opacity: 1; transform: scale(1.05); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
         }
 
         @media (max-width: 992px) {
-            .hero-grid,
-            .feature-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .landing-shell {
-                width: min(100%, calc(100% - 20px));
-            }
-
-            .hero-card {
-                border-radius: 0 0 34px 34px;
-            }
+            .welcome-catalog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .landing-shell { width: min(100%, calc(100% - 20px)); }
+            .hero { min-height: auto; padding-top: 3.5rem; }
         }
 
         @media (max-width: 576px) {
             .landing-nav,
-            .hero-card,
-            .feature-card {
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
-
-            .landing-actions {
-                width: 100%;
-            }
-
-            .landing-actions a {
-                flex: 1 1 auto;
-                text-align: center;
-            }
-
-            .hero-copy h1 {
-                font-size: 2.55rem;
-            }
+            .feature-card { padding-left: 1rem; padding-right: 1rem; }
+            .landing-brand { font-size: .95rem; }
+            .hero-copy h1 { font-size: 2.45rem; }
+            .hero-cta a { width: 100%; justify-content: center; }
+            .welcome-catalog-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <main class="landing-shell">
-        <header class="landing-nav">
-            <div class="landing-brand">
-                <span class="landing-mark"></span>
-                <span>AppWeb-GestionProductos</span>
-            </div>
+    @include('partials.cinematic-video')
 
-            <nav class="landing-actions">
-                @guest
-                    <a href="{{ route('login') }}" class="nav-primary">Ingresar</a>
-                @else
-                    <a href="{{ route('dashboard') }}" class="nav-primary">Ir al panel</a>
-                @endguest
-            </nav>
-        </header>
+    <div class="page">
+        <main class="landing-shell">
+            <header class="landing-nav">
+                <div class="landing-brand">
+                    <span class="landing-mark"></span>
+                    <span>AppWeb-GestionProductos</span>
+                </div>
 
-        <section class="hero-card">
-            <div class="hero-grid">
+                <nav class="landing-actions">
+                    @guest
+                        <a href="{{ route('login') }}" class="hero-cta-ghost js-cinematic-bridge">Ingresar</a>
+                        <a href="{{ route('register') }}" class="nav-primary js-cinematic-bridge">
+                            <i class="bi bi-person-plus"></i>
+                            Registrarse
+                        </a>
+                    @else
+                        <a href="{{ route('catalogo') }}" class="hero-cta-ghost">Catálogo</a>
+                        @if(auth()->user()->isAdmin())
+                            <a href="{{ route('dashboard') }}" class="nav-primary">
+                                <i class="bi bi-grid-1x2-fill"></i>
+                                Panel admin
+                            </a>
+                        @else
+                            <a href="{{ route('profile.edit') }}" class="nav-primary">Mi perfil</a>
+                        @endif
+                    @endguest
+                </nav>
+            </header>
+
+            <section class="hero">
                 <div class="hero-copy">
-                    <span class="hero-kicker">Sistema de gestión administrativa</span>
-                    <h1>El panel definitivo para <span>gestionar</span> tu organización.</h1>
-                    <p>Automatiza y centraliza el inventario, organiza tus categorías con exactitud y accede a reportes en tiempo real. Diseñado para una experiencia profesional, rápida y clara.</p>
+                    <span class="hero-kicker">
+                        <i class="bi bi-broadcast"></i>
+                        Catálogo y gestión de productos
+                    </span>
+                    <h1>Descubre el inventario y <span>explora</span> el catálogo.</h1>
+                    <p>Regístrese con su correo y contraseña para ver el catálogo completo. Si es administrador, también podrá gestionar categorías, productos y reportes.</p>
 
                     <div class="hero-cta">
                         @guest
-                            <a href="{{ route('login') }}" class="hero-cta-primary">Iniciar sesión</a>
+                            <a href="{{ route('register') }}" class="hero-cta-primary js-cinematic-bridge">
+                                Crear cuenta
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                            <a href="#catalogo" class="hero-cta-ghost">Ver catálogo</a>
                         @else
-                            <a href="{{ route('dashboard') }}" class="hero-cta-primary">Abrir panel</a>
+                            <a href="{{ route('catalogo') }}" class="hero-cta-primary">
+                                Abrir catálogo
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                            @if(auth()->user()->isAdmin())
+                                <a href="{{ route('dashboard') }}" class="hero-cta-ghost">Ir al panel</a>
+                            @endif
                         @endguest
                     </div>
-                </div>
 
-                <div class="hero-preview">
-                    <div class="hero-analytics">
-                        <div class="hero-screen">
-                            <div class="hero-bars">
-                                <span style="height: 46%"></span>
-                                <span style="height: 74%"></span>
-                                <span style="height: 60%"></span>
-                                <span style="height: 88%"></span>
-                                <span style="height: 52%"></span>
-                                <span style="height: 72%"></span>
-                                <span style="height: 63%"></span>
-                                <span style="height: 94%"></span>
-                            </div>
-                            <div class="hero-line">
-                                <svg viewBox="0 0 300 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M0 72C22 68 36 38 58 40C82 43 87 82 115 78C146 73 146 28 176 25C205 23 213 63 243 65C269 66 282 48 300 40" stroke="#7DB0FF" stroke-width="4" stroke-linecap="round"/>
-                                    <path d="M0 86C21 84 34 62 58 59C81 56 93 75 116 76C146 77 152 49 177 48C202 46 215 65 242 67C263 68 281 58 300 51" stroke="#3DE0C8" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
-                                </svg>
-                            </div>
-                        </div>
+                    <div class="signal-row">
+                        <span class="signal-chip"><span class="signal-dot"></span> {{ $totalProductos }} productos</span>
+                        <span class="signal-chip"><span class="signal-dot" style="animation-delay:.4s"></span> Acceso con registro</span>
+                        <span class="signal-chip"><span class="signal-dot" style="animation-delay:.8s"></span> Catálogo en vivo</span>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="feature-grid">
-            <article class="feature-card">
-                <span class="feature-icon icon-blue">□</span>
-                <h3>Gestión de Inventario</h3>
-                <p>Control total sobre tus productos, sincronización instantánea y organización limpia sin fisuras estructurales.</p>
-            </article>
+            <section id="catalogo" class="welcome-catalog">
+                <div class="welcome-catalog-head">
+                    <div>
+                        <span class="hero-kicker"><i class="bi bi-grid"></i> Catálogo</span>
+                        <h2>Productos destacados</h2>
+                        <p>
+                            @guest
+                                Vista previa bloqueada. Regístrese o inicie sesión para explorar el catálogo completo.
+                            @else
+                                Estos son algunos productos disponibles. Abra el catálogo completo para filtrar y navegar todo el inventario.
+                            @endguest
+                        </p>
+                    </div>
+                    @auth
+                        <a href="{{ route('catalogo') }}" class="nav-primary">Ver catálogo completo</a>
+                    @else
+                        <a href="{{ route('register') }}" class="nav-primary js-cinematic-bridge">Registrarse para ver</a>
+                    @endauth
+                </div>
 
-            <article class="feature-card">
-                <span class="feature-icon icon-green">◇</span>
-                <h3>Categorización</h3>
-                <p>Familias de productos con estados dinámicos controlados inteligentemente bajo una interfaz moderna y legible.</p>
-            </article>
+                <div class="welcome-catalog-grid {{ auth()->check() ? '' : 'is-locked' }}">
+                    @forelse($productos as $producto)
+                        <article class="welcome-product-card">
+                            <div class="welcome-product-media {{ $producto->imagen_url ? '' : 'is-empty' }}">
+                                @if($producto->imagen_url)
+                                    <img src="{{ $producto->imagen_url }}" alt="{{ $producto->nombre }}">
+                                @else
+                                    <i class="bi bi-box-seam"></i>
+                                @endif
+                            </div>
+                            <div class="welcome-product-body">
+                                <span>{{ $producto->categoria->nombre ?? 'Sin categoría' }}</span>
+                                <h3>{{ $producto->nombre }}</h3>
+                                <strong>{{ number_format($producto->precio, 2) }} Bs.</strong>
+                            </div>
+                        </article>
+                    @empty
+                        <div class="welcome-catalog-empty">
+                            <strong>Aún no hay productos publicados</strong>
+                            <p>Cuando el administrador registre inventario, aparecerá aquí.</p>
+                        </div>
+                    @endforelse
 
-            <article class="feature-card">
-                <span class="feature-icon icon-pink">↗</span>
-                <h3>Reportes Instantáneos</h3>
-                <p>Genera documentos y reportes exportables directamente desde el sistema con una presentación más profesional.</p>
-            </article>
-        </section>
+                    @guest
+                        <div class="welcome-catalog-lock">
+                            <div>
+                                <i class="bi bi-lock-fill"></i>
+                                <h3>Catálogo exclusivo para usuarios registrados</h3>
+                                <p>Cree su cuenta con correo y contraseña para desbloquear precios, stock e imágenes.</p>
+                                <div class="hero-cta" style="justify-content:center; margin-top:1rem;">
+                                    <a href="{{ route('register') }}" class="hero-cta-primary js-cinematic-bridge">Registrarse</a>
+                                    <a href="{{ route('login') }}" class="hero-cta-ghost js-cinematic-bridge">Ya tengo cuenta</a>
+                                </div>
+                            </div>
+                        </div>
+                    @endguest
+                </div>
+            </section>
 
-        <footer class="landing-footer">
-            <h4>Sistemas Informáticos · CEFTE 2026</h4>
-            <p class="mb-2">Construyendo interfaces robustas sobre Laravel.</p>
-            <hr class="mx-auto my-4" style="max-width: 920px; border-color: rgba(19,34,56,.08);">
-            <small>© 2026 Todos los derechos reservados. Desarrollado para la práctica y excelencia de Software.</small>
-        </footer>
-    </main>
+            <footer class="landing-footer">
+                <h4>Sistemas Informáticos · CEFTE 2026</h4>
+                <p class="mb-2">Construyendo interfaces robustas sobre Laravel.</p>
+                <hr>
+                <small>© 2026 Todos los derechos reservados. Desarrollado para la práctica y excelencia de Software.</small>
+            </footer>
+        </main>
+    </div>
+
+    @include('partials.cinematic-bridge')
 </body>
 </html>

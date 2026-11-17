@@ -23,6 +23,7 @@ class CreateAdminUserCommandTest extends TestCase
 
         $this->assertNotNull($admin);
         $this->assertSame('Administrador', $admin->name);
+        $this->assertTrue($admin->is_admin);
         $this->assertTrue(Hash::check('SecurePass123!', $admin->password));
     }
 

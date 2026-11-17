@@ -18,7 +18,7 @@ class ProductoImageTest extends TestCase
     {
         Storage::fake('public');
 
-        $user = User::factory()->create();
+        $user = User::factory()->admin()->create();
         $categoria = Categoria::create([
             'nombre' => 'Tecnologia',
             'descripcion' => 'Dispositivos',
@@ -49,7 +49,7 @@ class ProductoImageTest extends TestCase
     {
         Storage::fake('public');
 
-        $user = User::factory()->create();
+        $user = User::factory()->admin()->create();
         $categoria = Categoria::create([
             'nombre' => 'Tecnologia',
             'descripcion' => 'Dispositivos',

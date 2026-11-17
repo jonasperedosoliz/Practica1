@@ -14,7 +14,7 @@ class ProductoSearchTest extends TestCase
 
     public function test_la_busqueda_filtra_por_nombre_descripcion_y_categoria(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->admin()->create();
 
         $categoriaMonitores = Categoria::create([
             'nombre' => 'Monitores',

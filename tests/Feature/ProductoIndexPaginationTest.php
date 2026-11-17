@@ -14,7 +14,7 @@ class ProductoIndexPaginationTest extends TestCase
 
     public function test_productos_se_dividen_en_paginas_de_siete_registros(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->admin()->create();
         $categoria = Categoria::create([
             'nombre' => 'Categoria base',
             'descripcion' => 'Categoria de prueba',
