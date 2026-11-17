@@ -24,6 +24,7 @@ class CreateAdminUserCommandTest extends TestCase
         $this->assertNotNull($admin);
         $this->assertSame('Administrador', $admin->name);
         $this->assertTrue($admin->is_admin);
+        $this->assertTrue($admin->isAdmin());
         $this->assertTrue(Hash::check('SecurePass123!', $admin->password));
     }
 
@@ -32,6 +33,7 @@ class CreateAdminUserCommandTest extends TestCase
         $existing = User::factory()->create([
             'email' => 'admin@instituto.tech',
             'name' => 'Viejo Nombre',
+            'is_admin' => false,
         ]);
 
         $other = User::factory()->create([
@@ -52,6 +54,52 @@ class CreateAdminUserCommandTest extends TestCase
 
         $existing->refresh();
         $this->assertSame('Administrador', $existing->name);
+        $this->assertTrue($existing->is_admin);
         $this->assertTrue(Hash::check('NuevaClave123!', $existing->password));
+    }
+
+    public function test_promote_only_marks_existing_user_as_admin_without_changing_password(): void
+    {
+        $existing = User::factory()->create([
+            'email' => 'jonasperedosoliz@gmail.com',
+            'name' => 'Jonas Peredo',
+            'password' => Hash::make('ClaveOriginal123!'),
+            'is_admin' => false,
+        ]);
+
+        $originalHash = $existing->password;
+
+        $this->artisan('app:create-admin', [
+            '--email' => 'jonasperedosoliz@gmail.com',
+            '--promote-only' => true,
+        ])->assertSuccessful();
+
+        $existing->refresh();
+
+        $this->assertTrue($existing->is_admin);
+        $this->assertTrue($existing->isAdmin());
+        $this->assertSame('Jonas Peredo', $existing->name);
+        $this->assertSame($originalHash, $existing->password);
+        $this->assertTrue(Hash::check('ClaveOriginal123!', $existing->password));
+    }
+
+    public function test_non_interactive_update_without_password_promotes_without_resetting_credentials(): void
+    {
+        $existing = User::factory()->create([
+            'email' => 'admin@instituto.tech',
+            'name' => 'Admin Actual',
+            'password' => Hash::make('ClaveOriginal123!'),
+            'is_admin' => false,
+        ]);
+
+        $this->artisan('app:create-admin', [
+            '--email' => 'admin@instituto.tech',
+        ])->assertSuccessful();
+
+        $existing->refresh();
+
+        $this->assertTrue($existing->is_admin);
+        $this->assertSame('Admin Actual', $existing->name);
+        $this->assertTrue(Hash::check('ClaveOriginal123!', $existing->password));
     }
 }

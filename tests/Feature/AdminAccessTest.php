@@ -32,6 +32,34 @@ class AdminAccessTest extends TestCase
         $this->get(route('listaproductos.excel'))->assertRedirect(route('login'));
     }
 
+    public function test_non_administrator_cannot_access_admin_modules(): void
+    {
+        $customer = User::factory()->create([
+            'email' => 'cliente@example.com',
+            'is_admin' => false,
+        ]);
+
+        $this->actingAs($customer)
+            ->get(route('dashboard'))
+            ->assertRedirect(route('catalogo'));
+
+        $this->actingAs($customer)
+            ->get(route('listacategorias.index'))
+            ->assertRedirect(route('catalogo'));
+
+        $this->actingAs($customer)
+            ->get(route('listaproductos.index'))
+            ->assertRedirect(route('catalogo'));
+
+        $this->actingAs($customer)
+            ->get(route('profile.edit'))
+            ->assertOk()
+            ->assertSee('Catálogo')
+            ->assertSee('Perfil')
+            ->assertDontSee('>Categorías</span>', false)
+            ->assertDontSee('>Productos</span>', false);
+    }
+
     public function test_administrator_can_use_current_admin_features(): void
     {
         $admin = User::factory()->admin()->create([
@@ -55,7 +83,10 @@ class AdminAccessTest extends TestCase
 
         $this->actingAs($admin)
             ->get(route('dashboard'))
-            ->assertOk();
+            ->assertOk()
+            ->assertSee('Inicio')
+            ->assertSee('Categorías')
+            ->assertSee('Productos');
 
         $this->actingAs($admin)
             ->get(route('listacategorias.index'))
@@ -82,5 +113,39 @@ class AdminAccessTest extends TestCase
         $this->actingAs($admin)
             ->get(route('listaproductos.excel'))
             ->assertOk();
+    }
+
+    public function test_administrator_keeps_authentication_after_promotion(): void
+    {
+        $admin = User::factory()->create([
+            'email' => 'jonasperedosoliz@gmail.com',
+            'is_admin' => false,
+        ]);
+
+        $this->artisan('app:create-admin', [
+            '--email' => 'jonasperedosoliz@gmail.com',
+            '--promote-only' => true,
+        ])->assertSuccessful();
+
+        $admin->refresh();
+
+        $this->assertTrue($admin->isAdmin());
+
+        $this->actingAs($admin)
+            ->get(route('dashboard'))
+            ->assertOk();
+
+        $this->actingAs($admin)
+            ->post('/logout')
+            ->assertRedirect('/');
+
+        $this->assertGuest();
+
+        $this->post('/login', [
+            'email' => 'jonasperedosoliz@gmail.com',
+            'password' => 'password',
+        ])->assertRedirect(route('dashboard', absolute: false));
+
+        $this->assertAuthenticatedAs($admin);
     }
 }

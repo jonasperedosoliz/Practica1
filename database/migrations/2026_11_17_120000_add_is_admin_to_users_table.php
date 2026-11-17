@@ -9,18 +9,22 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->boolean('is_admin')->default(false)->after('password');
-        });
+        if (! Schema::hasColumn('users', 'is_admin')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->boolean('is_admin')->default(false)->after('password');
+            });
 
-        // Conserva acceso administrativo a las cuentas ya existentes.
-        DB::table('users')->update(['is_admin' => true]);
+            // Al introducir el flag, las cuentas ya existentes eran administrativas.
+            DB::table('users')->update(['is_admin' => true]);
+        }
     }
 
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('is_admin');
-        });
+        if (Schema::hasColumn('users', 'is_admin')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('is_admin');
+            });
+        }
     }
 };
