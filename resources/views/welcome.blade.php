@@ -592,10 +592,9 @@
 
                 <nav class="landing-actions">
                     @guest
-                        <a href="{{ route('login') }}" class="hero-cta-ghost js-cinematic-bridge">Ingresar</a>
-                        <a href="{{ route('register') }}" class="nav-primary js-cinematic-bridge">
-                            <i class="bi bi-person-plus"></i>
-                            Registrarse
+                        <a href="{{ route('login') }}" class="nav-primary js-cinematic-bridge">
+                            <i class="bi bi-box-arrow-in-right"></i>
+                            Ingresar
                         </a>
                     @else
                         <a href="{{ route('catalogo') }}" class="hero-cta-ghost">Catálogo</a>
@@ -618,12 +617,12 @@
                         Catálogo y gestión de productos
                     </span>
                     <h1>Descubre el inventario y <span>explora</span> el catálogo.</h1>
-                    <p>Regístrese con su correo y contraseña para ver el catálogo completo. Si es administrador, también podrá gestionar categorías, productos y reportes.</p>
+                    <p>Acceso exclusivo para el administrador. Inicie sesión para gestionar categorías, productos, reportes y el catálogo.</p>
 
                     <div class="hero-cta">
                         @guest
-                            <a href="{{ route('register') }}" class="hero-cta-primary js-cinematic-bridge">
-                                Crear cuenta
+                            <a href="{{ route('login') }}" class="hero-cta-primary js-cinematic-bridge">
+                                Iniciar sesión
                                 <i class="bi bi-arrow-right"></i>
                             </a>
                             <a href="#catalogo" class="hero-cta-ghost">Ver catálogo</a>
@@ -640,7 +639,7 @@
 
                     <div class="signal-row">
                         <span class="signal-chip"><span class="signal-dot"></span> {{ $totalProductos }} productos</span>
-                        <span class="signal-chip"><span class="signal-dot" style="animation-delay:.4s"></span> Acceso con registro</span>
+                        <span class="signal-chip"><span class="signal-dot" style="animation-delay:.4s"></span> Acceso administrador</span>
                         <span class="signal-chip"><span class="signal-dot" style="animation-delay:.8s"></span> Catálogo en vivo</span>
                     </div>
                 </div>
@@ -653,7 +652,7 @@
                         <h2>Productos destacados</h2>
                         <p>
                             @guest
-                                Vista previa bloqueada. Regístrese o inicie sesión para explorar el catálogo completo.
+                                Vista previa bloqueada. Inicie sesión como administrador para explorar el catálogo completo.
                             @else
                                 Estos son algunos productos disponibles. Abra el catálogo completo para filtrar y navegar todo el inventario.
                             @endguest
@@ -662,7 +661,7 @@
                     @auth
                         <a href="{{ route('catalogo') }}" class="nav-primary">Ver catálogo completo</a>
                     @else
-                        <a href="{{ route('register') }}" class="nav-primary js-cinematic-bridge">Registrarse para ver</a>
+                        <a href="{{ route('login') }}" class="nav-primary js-cinematic-bridge">Ingresar para ver</a>
                     @endauth
                 </div>
 
@@ -693,11 +692,10 @@
                         <div class="welcome-catalog-lock">
                             <div>
                                 <i class="bi bi-lock-fill"></i>
-                                <h3>Catálogo exclusivo para usuarios registrados</h3>
-                                <p>Cree su cuenta con correo y contraseña para desbloquear precios, stock e imágenes.</p>
+                                <h3>Catálogo exclusivo para el administrador</h3>
+                                <p>Inicie sesión con la cuenta autorizada para desbloquear precios, stock e imágenes.</p>
                                 <div class="hero-cta" style="justify-content:center; margin-top:1rem;">
-                                    <a href="{{ route('register') }}" class="hero-cta-primary js-cinematic-bridge">Registrarse</a>
-                                    <a href="{{ route('login') }}" class="hero-cta-ghost js-cinematic-bridge">Ya tengo cuenta</a>
+                                    <a href="{{ route('login') }}" class="hero-cta-primary js-cinematic-bridge">Iniciar sesión</a>
                                 </div>
                             </div>
                         </div>

@@ -60,6 +60,7 @@ class CatalogoAccessTest extends TestCase
         $this->get(route('welcome'))
             ->assertOk()
             ->assertSee('Producto welcome')
-            ->assertSee('Registrarse para ver');
+            ->assertSee('Ingresar para ver')
+            ->assertDontSee('Registrarse para ver');
     }
 }

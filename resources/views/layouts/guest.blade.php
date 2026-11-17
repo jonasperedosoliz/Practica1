@@ -510,9 +510,6 @@
                                 @if (Route::has('login'))
                                     <a href="{{ route('login') }}" class="js-cinematic-bridge {{ request()->routeIs('login') ? 'is-active' : '' }}">Ingresar</a>
                                 @endif
-                                @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="js-cinematic-bridge {{ request()->routeIs('register') ? 'is-active' : '' }}">Registrarse</a>
-                                @endif
                             </nav>
                         </div>
 
