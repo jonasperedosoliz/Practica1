@@ -35,9 +35,5 @@
         </div>
 
         <button class="auth-submit" type="submit">Entrar</button>
-
-        @if (Route::has('register'))
-            <p class="auth-footer mb-0 mt-4">¿No tiene cuenta? <a class="auth-link" href="{{ route('register') }}">Registrate</a></p>
-        @endif
     </form>
 </x-guest-layout>

@@ -43,13 +43,15 @@ npx playwright install chromium
 - `npm install` instala `@playwright/test`, que ya está declarado en `package.json`.
 - `npx playwright install chromium` descarga el navegador que usan las pruebas (solo la primera vez).
 
-No hace falta crear un usuario manualmente: antes de cada ejecución, `global-setup.ts` corre
-`php artisan db:seed --class=E2EUserSeeder`, que crea o actualiza el usuario de prueba:
+Antes de cada ejecución, `global-setup.ts` corre `php artisan db:seed --class=E2EUserSeeder`.
+Ese seeder **exige** las variables de entorno locales (sin valores por defecto en el repositorio):
 
-- Correo: `qa.e2e@example.com`
-- Contraseña: `Password123!`
+```powershell
+$env:E2E_USER_EMAIL="tu-usuario-e2e@local.test"
+$env:E2E_USER_PASSWORD="TuClaveSeguraLocal!"
+```
 
-Se pueden cambiar con las variables de entorno `E2E_USER_EMAIL` y `E2E_USER_PASSWORD`.
+No publique estas credenciales en GitHub ni en el servidor de producción.
 
 Tampoco hace falta iniciar el servidor: Playwright ejecuta `php artisan serve` automáticamente
 en `http://127.0.0.1:8000` si no está encendido (y lo reutiliza si ya lo está).

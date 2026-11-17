@@ -330,8 +330,7 @@
 
             <nav class="landing-actions">
                 @guest
-                    <a href="{{ route('login') }}" class="nav-ghost">Ingresar</a>
-                    <a href="{{ route('register') }}" class="nav-primary">Comenzar Gratis</a>
+                    <a href="{{ route('login') }}" class="nav-primary">Ingresar</a>
                 @else
                     <a href="{{ route('dashboard') }}" class="nav-primary">Ir al panel</a>
                 @endguest
@@ -347,8 +346,7 @@
 
                     <div class="hero-cta">
                         @guest
-                            <a href="{{ route('register') }}" class="hero-cta-primary">Crear una cuenta</a>
-                            <a href="{{ route('login') }}" class="hero-cta-secondary">Iniciar sesión</a>
+                            <a href="{{ route('login') }}" class="hero-cta-primary">Iniciar sesión</a>
                         @else
                             <a href="{{ route('dashboard') }}" class="hero-cta-primary">Abrir panel</a>
                         @endguest

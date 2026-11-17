@@ -17,16 +17,19 @@ class AuthenticationTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_users_can_authenticate_using_the_login_screen(): void
+    public function test_administrator_can_authenticate_using_the_login_screen(): void
     {
-        $user = User::factory()->create();
+        $admin = User::factory()->create([
+            'name' => 'Administrador',
+            'email' => 'admin@example.com',
+        ]);
 
         $response = $this->post('/login', [
-            'email' => $user->email,
+            'email' => $admin->email,
             'password' => 'password',
         ]);
 
-        $this->assertAuthenticated();
+        $this->assertAuthenticatedAs($admin);
         $response->assertRedirect(route('dashboard', absolute: false));
     }
 

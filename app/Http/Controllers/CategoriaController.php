@@ -67,12 +67,12 @@ class CategoriaController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nombre'      => ['required', 'string', 'max:255'],
+            'nombre' => ['required', 'string', 'max:255'],
             'descripcion' => ['nullable', 'string'],
-            'estado'      => ['required', 'boolean'],
+            'estado' => ['required', 'boolean'],
         ], [
             'nombre.required' => 'El nombre de la categoría es obligatorio.',
-            'nombre.max'      => 'El nombre no puede superar 255 caracteres.',
+            'nombre.max' => 'El nombre no puede superar 255 caracteres.',
             'estado.required' => 'Debe seleccionar un estado.',
         ]);
 
@@ -94,12 +94,12 @@ class CategoriaController extends Controller
         $categoria = $listacategoria;
 
         $validated = $request->validate([
-            'nombre'      => ['required', 'string', 'max:255'],
+            'nombre' => ['required', 'string', 'max:255'],
             'descripcion' => ['nullable', 'string'],
-            'estado'      => ['required', 'boolean'],
+            'estado' => ['required', 'boolean'],
         ], [
             'nombre.required' => 'El nombre de la categoría es obligatorio.',
-            'nombre.max'      => 'El nombre no puede superar 255 caracteres.',
+            'nombre.max' => 'El nombre no puede superar 255 caracteres.',
             'estado.required' => 'Debe seleccionar un estado.',
         ]);
 

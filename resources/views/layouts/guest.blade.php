@@ -428,9 +428,6 @@
                                 @if (Route::has('login'))
                                     <a href="{{ route('login') }}">Ingresar</a>
                                 @endif
-                                @if (Route::has('register'))
-                                    <a href="{{ route('register') }}">Crear cuenta</a>
-                                @endif
                             </nav>
                         </div>
 
